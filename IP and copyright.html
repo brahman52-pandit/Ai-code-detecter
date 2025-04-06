@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CopyGuard - Advanced Copyright Protection for Digital Content</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --secondary: #10b981;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #94a3b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        /* Header & Navbar */
+        header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+            color: var(--secondary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--dark);
+            cursor: pointer;
+        }
+
+        /* Mobile Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100vh;
+            background-color: white;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+            transition: right 0.3s ease;
+            z-index: 1001;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .sidebar.open {
+            right: 0;
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .close-sidebar {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .sidebar-links {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .sidebar-links a {
+            text-decoration: none;
+            color: var(--dark);
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--gray);
+        }
+
+        /* Main Content */
+        main {
+            margin-top: 80px;
+            padding: 2rem;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Hero Section */
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 5rem 0;
+            background: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.9)), url('https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            border-radius: 10px;
+            margin-bottom: 3rem;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--dark);
+            max-width: 800px;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--primary);
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #4338ca;
+            transform: translateY(-3px);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 3rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--primary);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            color: var(--secondary);
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        /* Protection Section */
+        .protection {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .protection-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .protection-item {
+            padding: 1.5rem;
+            border-radius: 8px;
+            background-color: var(--light);
+        }
+
+        .protection-item h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Detection Tool */
+        .detection-tool {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .tool-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .tool-header h2 {
+            color: var(--primary);
+        }
+
+        .code-input {
+            width: 100%;
+            height: 200px;
+            padding: 1rem;
+            border: 1px solid var(--gray);
+            border-radius: 5px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1rem;
+            resize: vertical;
+            margin-bottom: 1rem;
+        }
+
+        .analyze-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .analyze-btn:hover {
+            background-color: #4338ca;
+        }
+
+        .result-box {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border-radius: 5px;
+            background-color: #f1f5f9;
+            display: none;
+        }
+
+        .result-box h3 {
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        /* FAQ */
+        .faq {
+            padding: 3rem 0;
+        }
+
+        .faq-container {
+            margin-top: 2rem;
+        }
+
+        .faq-item {
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .faq-item:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .faq-question {
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--primary);
+            transition: color 0.3s ease;
+        }
+
+        .faq-question:hover {
+            color: var(--secondary);
+        }
+
+        .faq-question i {
+            transition: transform 0.3s ease;
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            padding: 0 1.5rem;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+            color: var(--dark);
+            border-top: 1px solid transparent;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 500px;
+            padding: 1.5rem;
+            border-top: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .faq-item.active .faq-question i {
+            transform: rotate(45deg);
+            color: var(--secondary);
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 3rem 2rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-column h3 {
+            margin-bottom: 1rem;
+            color: var(--secondary);
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-column a {
+            color: var(--gray);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-column a:hover {
+            color: white;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--gray);
+            color: var(--gray);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header & Navbar -->
+    <header>
+        <div class="navbar">
+            <div class="logo">
+                <i class="fas fa-copyright logo-icon"></i>
+                <span>CopyGuard</span>
+            </div>
+            <nav class="nav-links">
+                <a href="#main.html">Home</a>
+                <a href="Features.html">Features</a>
+                <a href="Contact.html">Contact</a>
+                <a href="Signup.html">Sign UP</a>
+            </nav>
+            <button class="mobile-menu-btn" id="menuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+    
+    <!-- Mobile Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Menu</h3>
+            <button class="close-sidebar" id="closeSidebar">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <nav class="sidebar-links">
+            <a href="#main.html">Home</a>
+            <a href="Features.html">Features</a>
+            <a href="Contact.html">Contact</a>
+            <a href="Signup.html">Sign UP</a>
+        </nav>
+    </div>
+    
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section class="hero" id="home">
+            <h1>Advanced Copyright Protection for Digital Content</h1>
+            <p>Secure your creative works, code, and digital assets with our comprehensive copyright protection services and AI-powered detection technology.</p>
+            <a href="#detection" class="btn">Scan for Violations</a>
+        </section>
+        
+        <!-- Services Section -->
+        <section class="features" id="services">
+            <h2 class="section-title">Our Copyright Services</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <h3>Code Copyright</h3>
+                    <p>Protect your source code from unauthorized use with our specialized software copyright registration.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <h3>Content Protection</h3>
+                    <p>Secure your written content, articles, and documentation with automatic copyright monitoring.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-image"></i>
+                    </div>
+                    <h3>Digital Media</h3>
+                    <p>Protect your images, videos, and multimedia content with digital watermarking and tracking.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h3>Violation Detection</h3>
+                    <p>Our AI scans the web to detect unauthorized use of your copyrighted materials.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-gavel"></i>
+                    </div>
+                    <h3>Legal Support</h3>
+                    <p>Expert legal assistance for copyright enforcement and DMCA takedowns.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h3>Global Coverage</h3>
+                    <p>International copyright protection and enforcement across multiple jurisdictions.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Detection Tool -->
+        <section class="detection-tool" id="detection">
+            <div class="tool-header">
+                <h2>Copyright Violation Detector</h2>
+                <select class="language-select">
+                    <option>All Content Types</option>
+                    <option>Source Code</option>
+                    <option>Text Content</option>
+                    <option>Images</option>
+                    <option>Videos</option>
+                </select>
+            </div>
+            <textarea class="code-input" placeholder="Paste your content here to check for copyright violations..."></textarea>
+            <button class="analyze-btn">Scan for Violations</button>
+            
+            <div class="result-box">
+                <h3><i class="fas fa-search"></i> Detection Results</h3>
+                <div id="resultsContent">
+                    <p>Scan results will appear here. Our system will analyze your content against our database of copyrighted materials and web sources.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Protection Section -->
+        <section class="protection" id="protection">
+            <h2 class="section-title">How We Protect Your Copyright</h2>
+            <p>Our multi-layered approach ensures comprehensive protection for your intellectual property in the digital space.</p>
+            
+            <div class="protection-grid">
+                <div class="protection-item">
+                    <h3><i class="fas fa-fingerprint"></i> Digital Fingerprinting</h3>
+                    <p>Unique identifiers embedded in your content allow tracking across the web.</p>
+                </div>
+                
+                <div class="protection-item">
+                    <h3><i class="fas fa-robot"></i> AI Monitoring</h3>
+                    <p>Continuous scanning of websites and repositories for unauthorized use.</p>
+                </div>
+                
+                <div class="protection-item">
+                    <h3><i class="fas fa-database"></i> Registry</h3>
+                    <p>Secure timestamped registration creates legal evidence of ownership.</p>
+                </div>
+                
+                <div class="protection-item">
+                    <h3><i class="fas fa-bell"></i> Alerts</h3>
+                    <p>Instant notifications when potential violations are detected.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- FAQ Section -->
+        <section class="faq" id="faq">
+            <h2 class="section-title">Copyright FAQs</h2>
+            
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Is my code automatically copyrighted?</span>
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes, in most countries, original code is automatically copyrighted when created. However, registration provides stronger legal protection and is required before you can file a lawsuit for infringement.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How does copyright differ for open source code?</span>
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Open source licenses grant specific usage rights while maintaining copyright. The copyright owner chooses the license terms that dictate how others may use, modify, and distribute the code.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>What constitutes copyright infringement for code?</span>
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Substantial similarity in structure, sequence, organization, or literal copying without permission may constitute infringement. Even modified code can infringe if it's substantially similar to the original.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How can I prove copyright ownership?</span>
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Registration with copyright offices, version control histories, dated copies, and our timestamped registry all serve as evidence. The more documentation you have, the stronger your case.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>Services</h3>
+                <ul>
+                    <li><a href="blog.html">My Blog Page</a></li>
+                    <li><a href="Governance.html">Governance & Compliance</a></li>
+                    <li><a href="LLM.html">Unauthorized LLM Usage</a></li>
+                    <li><a href="Ai model.html">AI Model Training</a></li>
+                    <li><a href="IP and copyright.html">IP & Copyright</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Resources</h3>
+                <ul>
+                    <li><a href="blog.html">My Blog Page</a></li>
+                    <li><a href="Governance.html">Governance & Compliance</a></li>
+                    <li><a href="LLM.html">Unauthorized LLM Usage</a></li>
+                    <li><a href="Ai model.html">AI Model Training</a></li>
+                    <li><a href="IP and copyright.html">IP & Copyright</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Company</h3>
+                <ul>
+                    <li><a href="About.html">About Us</a></li>
+                    <li><a href="Ai model.html">Ai Model Traninig</a></li>
+                    <li><a href="Careers.html">Careers</a></li>
+                    <li><a href="Contact.html">Contact</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Contact Us</h3>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#"><i class="fab fa-github"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-dev"></i></a>
+                </div>
+                
+                <p style="margin-top: 1rem;">
+                    CopyGuard Technologies<br>
+                    WIT college Gurugram Sohna<br>
+                    Email: mohitkumar905331@gmail.com<br>
+                    Phone: +91 9053318503
+                </p>
+            </div>
+        </div>
+        
+        <div class="copyright">
+            <p>© 2023 CopyGuard. All rights reserved. | <a href="#">Terms</a> | <a href="#">Privacy</a></p>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Sidebar Toggle
+        const menuBtn = document.getElementById('menuBtn');
+        const closeSidebar = document.getElementById('closeSidebar');
+        const sidebar = document.getElementById('sidebar');
+        
+        menuBtn.addEventListener('click', () => {
+            sidebar.classList.add('open');
+        });
+        
+        closeSidebar.addEventListener('click', () => {
+            sidebar.classList.remove('open');
+        });
+        
+        // FAQ Accordion
+        const faqItems = document.querySelectorAll('.faq-item');
+        
+        faqItems.forEach(item => {
+            const question = item.querySelector('.faq-question');
+            
+            question.addEventListener('click', () => {
+                item.classList.toggle('active');
+                
+                const icon = question.querySelector('i');
+                if (item.classList.contains('active')) {
+                    icon.classList.remove('fa-plus');
+                    icon.classList.add('fa-times');
+                } else {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-plus');
+                }
+            });
+        });
+
+        // Copyright Detection Tool
+        const analyzeBtn = document.querySelector('.analyze-btn');
+        const resultBox = document.querySelector('.result-box');
+        
+        analyzeBtn.addEventListener('click', () => {
+            const codeInput = document.querySelector('.code-input').value;
+            
+            if (codeInput.trim() === '') {
+                alert('Please paste some content to analyze');
+                return;
+            }
+            
+            analyzeBtn.textContent = 'Scanning...';
+            analyzeBtn.disabled = true;
+            
+            // Simulate analysis (in a real app, this would be an API call)
+            setTimeout(() => {
+                resultsContent.innerHTML = `
+                    <div class="result-item">
+                        <h4><i class="fas fa-file-code" style="color: var(--primary);"></i> Content Analysis Complete</h4>
+                        <p><i class="fas fa-check-circle" style="color: var(--secondary);"></i> <strong>Originality:</strong> 98% unique content</p>
+                        <p><i class="fas fa-exclamation-triangle" style="color: orange;"></i> <strong>Potential matches found:</strong> 2</p>
+                        <ul>
+                            <li>Similar code pattern detected on GitHub (87% match)</li>
+                            <li>Text excerpt found on Stack Overflow (76% match)</li>
+                        </ul>
+                        <p><i class="fas fa-lightbulb" style="color: var(--primary);"></i> <strong>Recommendations:</strong></p>
+                        <ul>
+                            <li>Register copyright for stronger protection</li>
+                            <li>Consider adding license headers</li>
+                            <li>Monitor matched sources for potential violations</li>
+                        </ul>
+                    </div>
+                `;
+                
+                resultBox.style.display = 'block';
+                analyzeBtn.textContent = 'Scan for Violations';
+                analyzeBtn.disabled = false;
+                
+                // Scroll to results
+                resultBox.scrollIntoView({ behavior: 'smooth' });
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

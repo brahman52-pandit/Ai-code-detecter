@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | AI Code Detector</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="signup.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <header>
+        <div class="navbar">
+            <div class="logo">
+                <i class="fas fa-brain logo-icon"></i>
+                <span>AI Code Detector</span>
+            </div>
+            <nav class="nav-links">
+                <a href="main.html">Home</a>
+                <a href="Features.html">Features</a>
+                <a href="Contact.html">Contact</a>
+                <button class="signup-btn" onclick="location.href='signup.html'">Sign Up</button>
+            </nav>
+            <button class="mobile-menu-btn" id="menuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <div class="main-container">
+        <h2>Join AI Code Detector</h2>
+        <div class="container" id="container">
+            <div class="form-container sign-up-container">
+                <form id="signupForm">
+                    <h1>Create Account</h1>
+                    <div class="social-container">
+                        <a href="#" class="social"><i class="fab fa-google"></i></a>
+                        <a href="#" class="social"><i class="fab fa-github"></i></a>
+                        <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                    <span>or use your email for registration</span>
+                    <input type="text" id="signupName" placeholder="Full Name" required />
+                    <input type="email" id="signupEmail" placeholder="Email" required />
+                    <div class="password-container">
+                        <input type="password" id="signupPassword" placeholder="Password (min 8 characters)" required />
+                        <i class="fas fa-eye password-toggle" id="toggleSignupPassword"></i>
+                    </div>
+                    <div class="error-message" id="signupError"></div>
+                    <button type="submit">Sign Up</button>
+                </form>
+            </div>
+            <div class="form-container sign-in-container">
+                <form id="loginForm">
+                    <h1>Sign In</h1>
+                    <div class="social-container">
+                        <a href="#" class="social"><i class="fab fa-google"></i></a>
+                        <a href="#" class="social"><i class="fab fa-github"></i></a>
+                        <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                    <span>or use your account</span>
+                    <input type="email" id="loginEmail" placeholder="Email" required />
+                    <div class="password-container">
+                        <input type="password" id="loginPassword" placeholder="Password" required />
+                        <i class="fas fa-eye password-toggle" id="toggleLoginPassword"></i>
+                    </div>
+                    <div class="error-message" id="loginError"></div>
+                    <a href="#">Forgot your password?</a>
+                    <button type="submit">Sign In</button>
+                </form>
+            </div>
+            <div class="overlay-container">
+                <div class="overlay">
+                    <div class="overlay-panel overlay-left">
+                        <h1>Welcome Back!</h1>
+                        <p>To continue your journey with AI Code Detector, please login with your credentials</p>
+                        <button class="ghost" id="signIn">Sign In</button>
+                    </div>
+                    <div class="overlay-panel overlay-right">
+                        <h1>New Here?</h1>
+                        <p>Join our community to detect and analyze AI-generated code with precision</p>
+                        <button class="ghost" id="signUp">Sign Up</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>
+            Created with <i class="fas fa-heart"></i> by 
+            <a href="https://www.instagram.com/m_o_h_i_t.sharma._52?igsh=MTg3NDBydHhucDBuYQ==" target="_blank">Mohit Kumar</a>
+            - © 2025 AI Code Detector. All rights reserved.
+        </p>
+    </footer>
+
+    <script src="signup.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"></script>
+</body>
+</html>

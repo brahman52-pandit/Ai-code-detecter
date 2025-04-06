@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Code Detector - Plagiarism Checker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="Plagiarism.css".css">
+    <style>
+        :root {
+            --primary-color: #6c5ce7;
+            --secondary-color: #a29bfe;
+            --accent-color: #fd79a8;
+            --text-color: #2d3436;
+            --light-bg: #f5f6fa;
+            --white: #ffffff;
+            --dark-bg: #2d3436;
+            --danger-color: #ff4757;
+            --success-color: #2ed573;
+            
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+       
+        /* Main Content */
+        main {
+            padding-top: 80px;
+            min-height: 100vh;
+        }
+
+        /* Hero Section */
+        .plagiarism-hero {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--white);
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        .plagiarism-hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .plagiarism-hero p {
+            max-width: 700px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+        }
+
+        /* Checker Section */
+        .checker-section {
+            padding: 60px 0;
+        }
+
+        .checker-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+
+        @media (min-width: 992px) {
+            .checker-container {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .input-section, .results-section {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            font-size: 1.8rem;
+        }
+
+        .input-methods {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+
+        .method-btn {
+            background: none;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .method-btn.active {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        .input-area {
+            margin-bottom: 20px;
+        }
+
+        .text-input {
+            width: 100%;
+            min-height: 200px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            resize: vertical;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-label {
+            display: block;
+            padding: 15px;
+            border: 2px dashed #ddd;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-label:hover {
+            border-color: var(--primary-color);
+        }
+
+        .file-label i {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .check-btn {
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+
+        .check-btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .check-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* Results Section */
+        .results-container {
+            min-height: 300px;
+        }
+
+        .progress-container {
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background-color: #eee;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--primary-color);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .result-details {
+            margin-top: 30px;
+        }
+
+        .result-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-title {
+            font-weight: 500;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .result-value {
+            font-weight: bold;
+        }
+
+        .originality {
+            color: var(--success-color);
+        }
+
+        .plagiarism {
+            color: var(--danger-color);
+        }
+
+        .sources-list {
+            margin-top: 20px;
+        }
+
+        .source-item {
+            padding: 10px;
+            background-color: var(--light-bg);
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .source-url {
+            color: var(--primary-color);
+            text-decoration: none;
+            word-break: break-all;
+        }
+
+        .source-url:hover {
+            text-decoration: underline;
+        }
+
+        .source-similarity {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 200px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(108, 92, 231, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .plagiarism-hero h1 {
+                font-size: 2rem;
+            }
+
+            .plagiarism-hero p {
+                font-size: 1rem;
+            }
+
+            .section-title {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="navbar">
+            <div class="logo">
+                <i class="fas fa-brain logo-icon"></i>
+                <span>AI Code Detector</span>
+            </div>
+            <nav class="nav-links">
+                <a href="main.html">Home</a>
+                <a href="Features.html">Features</a>
+                <a href="contact.html">Contact</a>
+                <a href="Signup.html">Sign UP</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section class="plagiarism-hero">
+            <div class="container">
+                <h1>Advanced Plagiarism Checker</h1>
+                <p>Detect copied content in your code or documents with our powerful plagiarism detection technology. Get detailed reports and similarity percentages.</p>
+            </div>
+        </section>
+
+        <!-- Checker Section -->
+        <section class="checker-section">
+            <div class="container">
+                <div class="checker-container">
+                    <!-- Input Section -->
+                    <div class="input-section">
+                        <h2 class="section-title">
+                            <i class="fas fa-edit"></i>
+                            Check for Plagiarism
+                        </h2>
+                        
+                        <div class="input-methods">
+                            <button class="method-btn active" id="textMethod">Text</button>
+                            <button class="method-btn" id="fileMethod">File</button>
+                            <button class="method-btn" id="urlMethod">URL</button>
+                        </div>
+                        
+                        <div class="input-area" id="textInputArea">
+                            <textarea class="text-input" id="textInput" placeholder="Paste your text or code here to check for plagiarism..."></textarea>
+                        </div>
+                        
+                        <div class="input-area" id="fileInputArea" style="display: none;">
+                            <input type="file" id="fileInput" class="file-input" accept=".txt,.pdf,.doc,.docx,.java,.py,.js,.html,.css">
+                            <label for="fileInput" class="file-label">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>Click to upload or drag and drop<br>
+                                <small>Supports: TXT, PDF, DOC, DOCX, Java, Python, JS, HTML, CSS</small></p>
+                            </label>
+                            <div id="fileName" style="margin-top: 10px; font-size: 0.9rem;"></div>
+                        </div>
+                        
+                        <div class="input-area" id="urlInputArea" style="display: none;">
+                            <input type="text" class="text-input" id="urlInput" placeholder="Enter URL to check (e.g., https://example.com/page)">
+                        </div>
+                        
+                        <button class="check-btn" id="checkBtn" disabled>
+                            <i class="fas fa-search"></i> Check for Plagiarism
+                        </button>
+                    </div>
+                    
+                    <!-- Results Section -->
+                    <div class="results-section">
+                        <h2 class="section-title">
+                            <i class="fas fa-chart-bar"></i>
+                            Results
+                        </h2>
+                        
+                        <div class="results-container" id="resultsContainer">
+                            <div class="welcome-message">
+                                <p>Your plagiarism results will appear here after analysis.</p>
+                                <p>To begin, enter some text, upload a file, or provide a URL on the left.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>Solutions</h3>
+                <ul>
+                    <li><a href="blog.html">My Blog Page</a></li>
+                    <li><a href="Governance.html">Governance & Compliance</a></li>
+                    <li><a href="LLM.html">Unauthorized LLM Usage</a></li>
+                    <li><a href="Ai model.html">AI Model Training</a></li>
+                    <li><a href="IP and copyright.html">IP & Copyright</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Products</h3>
+                <ul>
+                    <li><a href="Ai detecter.html">AI Detector</a></li>
+                    <li><a href="Plagiarism.html">Plagiarism Checker</a></li>
+                    <li><a href="Ai assitant.html">Writing Assistant</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Company</h3>
+                <ul>
+                    <li><a href="About.html">About Us</a></li>
+                    <li><a href="News.html">News & Media</a></li>
+                    <li><a href="Careers.html">Careers</a></li>
+                    <li><a href="Contact.html">Contact Us</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Connect With Us</h3>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-linkedin"></i></a> 
+                    <a href="https://www.facebook.com/share/1PPoiiYR2x/" target="_blank"><i class="fab fa-facebook"></i></a>
+                    <a href="https://www.instagram.com/m_o_h_i_t.sharma._52?igsh=MTg3NDBydHhucDBuYQ==" target="_blank"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-github"></i></a>
+                </div>
+                
+                <p style="margin-top: 1rem;">WIT college Gurugram<br>
+                Mail=mohitkumar905331@gmail.com<br>Mobile No = +91 9053318503
+            </p>
+            </div>
+        </div>
+        
+        <div class="copyright">
+            <p>© 2025 AI Code Detector. All rights reserved. | <a href="#">Terms of Use</a> | <a href="#">Privacy Policy</a></p>
+        </div>
+    </footer>
+
+
+    <script>
+        // DOM Elements
+        const textMethodBtn = document.getElementById('textMethod');
+        const fileMethodBtn = document.getElementById('fileMethod');
+        const urlMethodBtn = document.getElementById('urlMethod');
+        const textInputArea = document.getElementById('textInputArea');
+        const fileInputArea = document.getElementById('fileInputArea');
+        const urlInputArea = document.getElementById('urlInputArea');
+        const textInput = document.getElementById('textInput');
+        const fileInput = document.getElementById('fileInput');
+        const urlInput = document.getElementById('urlInput');
+        const checkBtn = document.getElementById('checkBtn');
+        const resultsContainer = document.getElementById('resultsContainer');
+        const fileNameDisplay = document.getElementById('fileName');
+
+        // Method Selection
+        function setActiveMethod(method) {
+            // Reset all buttons and areas
+            textMethodBtn.classList.remove('active');
+            fileMethodBtn.classList.remove('active');
+            urlMethodBtn.classList.remove('active');
+            textInputArea.style.display = 'none';
+            fileInputArea.style.display = 'none';
+            urlInputArea.style.display = 'none';
+            
+            // Activate selected method
+            if (method === 'text') {
+                textMethodBtn.classList.add('active');
+                textInputArea.style.display = 'block';
+                checkBtn.disabled = textInput.value.trim() === '';
+            } else if (method === 'file') {
+                fileMethodBtn.classList.add('active');
+                fileInputArea.style.display = 'block';
+                checkBtn.disabled = !fileInput.files || fileInput.files.length === 0;
+            } else if (method === 'url') {
+                urlMethodBtn.classList.add('active');
+                urlInputArea.style.display = 'block';
+                checkBtn.disabled = urlInput.value.trim() === '';
+            }
+        }
+
+        // Event Listeners for Method Selection
+        textMethodBtn.addEventListener('click', () => setActiveMethod('text'));
+        fileMethodBtn.addEventListener('click', () => setActiveMethod('file'));
+        urlMethodBtn.addEventListener('click', () => setActiveMethod('url'));
+
+        // Enable/Disable Check Button based on input
+        textInput.addEventListener('input', () => {
+            checkBtn.disabled = textInput.value.trim() === '';
+        });
+
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files && fileInput.files.length > 0) {
+                fileNameDisplay.textContent = `Selected file: ${fileInput.files[0].name}`;
+                checkBtn.disabled = false;
+            } else {
+                fileNameDisplay.textContent = '';
+                checkBtn.disabled = true;
+            }
+        });
+
+        urlInput.addEventListener('input', () => {
+            checkBtn.disabled = urlInput.value.trim() === '';
+        });
+
+        // Check for Plagiarism
+        checkBtn.addEventListener('click', async () => {
+            // Show loading state
+            resultsContainer.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Analyzing for plagiarism...</p>
+                </div>
+            `;
+            
+            try {
+                // Simulate API call (in a real app, you would call your backend here)
+                const result = await simulatePlagiarismCheck();
+                
+                // Display results
+                displayResults(result);
+            } catch (error) {
+                resultsContainer.innerHTML = `
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Error: ${error.message}</p>
+                        <button onclick="window.location.reload()">Try Again</button>
+                    </div>
+                `;
+            }
+        });
+
+        // Simulate Plagiarism Check (Replace with actual API call)
+        function simulatePlagiarismCheck() {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    // Generate random results for demo
+                    const originality = Math.floor(Math.random() * 40) + 60; // 60-100% original
+                    const plagiarism = 100 - originality;
+                    
+                    const sources = [];
+                    if (plagiarism > 10) {
+                        const sourceCount = Math.min(Math.floor(plagiarism / 10), 5);
+                        for (let i = 0; i < sourceCount; i++) {
+                            sources.push({
+                                url: `https://example.com/source${i+1}`,
+                                similarity: Math.floor(plagiarism / sourceCount) + (i === 0 ? plagiarism % sourceCount : 0)
+                            });
+                        }
+                    }
+                    
+                    resolve({
+                        originality,
+                        plagiarism,
+                        sources
+                    });
+                }, 3000);
+            });
+        }
+
+        // Display Results
+        function displayResults(result) {
+            let sourcesHTML = '';
+            
+            if (result.sources && result.sources.length > 0) {
+                sourcesHTML = `
+                    <div class="sources-list">
+                        <h3>Potential Sources:</h3>
+                        ${result.sources.map(source => `
+                            <div class="source-item">
+                                <a href="${source.url}" class="source-url" target="_blank">${source.url}</a>
+                                <div class="source-similarity">${source.similarity}% similar</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else {
+                sourcesHTML = '<p>No significant sources of plagiarism found.</p>';
+            }
+            
+            resultsContainer.innerHTML = `
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${result.originality}%"></div>
+                    </div>
+                    <div class="progress-text">
+                        <span>Originality: <span class="result-value originality">${result.originality}%</span></span>
+                        <span>Plagiarism: <span class="result-value plagiarism">${result.plagiarism}%</span></span>
+                    </div>
+                </div>
+                
+                <div class="result-details">
+                    <div class="result-item">
+                        <div class="result-title">
+                            <span>Original Content</span>
+                            <span class="result-value originality">${result.originality}%</span>
+                        </div>
+                        <p>This percentage represents content that appears to be original and not copied from other sources.</p>
+                    </div>
+                    
+                    <div class="result-item">
+                        <div class="result-title">
+                            <span>Potential Plagiarism</span>
+                            <span class="result-value plagiarism">${result.plagiarism}%</span>
+                        </div>
+                        <p>This percentage represents content that matches other sources found online or in our database.</p>
+                    </div>
+                    
+                    ${sourcesHTML}
+                    
+                    <div class="result-item">
+                        <p><strong>Note:</strong> This is a simulated result. In a production environment, this would connect to a plagiarism detection API for real analysis.</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Initialize
+        setActiveMethod('text');
+    </script>
+    <script src="plagiarism.js"></script>
+</body>
+</html>

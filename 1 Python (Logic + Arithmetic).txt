@@ -1,0 +1,72 @@
+1 Python (Logic + Arithmetic)
+python
+Copy
+def calculate_average(nums):
+    total = 0
+    for i in range(len(nums)):
+        total += nums[i]  # Missing division for average
+    return total  # Logical error: no average calculation
+
+print(calculate_average([10, 20, 30]))  # Returns 60 instead of 20
+
+2  function multiply(a, b) {
+    return a * b  // Missing semicolon
+}
+
+let result = multiply(5, '5')  // Arithmetic: string multiplication
+console.log(result);  // Returns "25" (string) instead of 25 (number)
+
+3 #include <iostream>
+using namespace std;
+
+int main() {
+    int* ptr = nullptr;
+    cout << *ptr;  // Logic: null pointer dereference
+    return 0;
+}
+
+4  #include <iostream>
+using namespace std;
+
+int main() {
+    int* ptr = nullptr;
+    cout << *ptr;  // Logic: null pointer dereference
+    return 0;
+}
+5 def check_even(num):
+if num % 2 == 0:  # Indentation error
+    return True
+else:
+    return False  # Logic: returns False for odd numbers (correct but trivial)
+
+6  let a = 5;
+let b = "5";
+if (a == b) {  // Logic: loose equality
+    console.log("Equal");  // Prints incorrectly
+}
+
+7  public class Main {
+    public static void main(String[] args) {
+        int[] arr = {1, 2, 3};
+        System.out.println(arr[3]);  // Logic: ArrayIndexOutOfBounds
+    }
+}
+8  public class Main {
+    public static void main(String[] args) {
+        int[] arr = {1, 2, 3};
+        System.out.println(arr[3]);  // Logic: ArrayIndexOutOfBounds
+    }
+}
+
+
+9  #include <stdlib.h>
+int main() {
+    int *ptr = malloc(10 * sizeof(int));
+    ptr[0] = 5;  // Syntax: extra parenthesis
+    // Logic: memory leak (no free)
+}
+
+
+10 i = 0
+while i < 5:  # Logic: infinite loop (no increment)
+    print("Stuck!")

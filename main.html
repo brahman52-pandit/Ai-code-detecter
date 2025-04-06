@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Code Detector - Analyze & Detect Errors in Your Code</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="main.css">
+    <link rel="icon" type="image/x-icon" href="icons8-ai-16.png">
+</head>
+<body>
+    <!-- Header & Navbar -->
+    <header>
+        <div class="navbar">
+            <div class="logo">
+                <i class="fas fa-brain logo-icon floating"></i>
+                <span>AI Code Detector</span>
+            </div>
+            <nav class="nav-links">
+                <a href="main.html">Home</a>
+                <a href="Features.html">Features</a>
+                <a href="Contact.html">Contact</a>
+                <a href="Signup.html">Sign UP</a>
+            </nav>
+            <button class="mobile-menu-btn" id="menuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+    
+    <!-- Mobile Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Menu</h3>
+            <button class="close-sidebar" id="closeSidebar">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <nav class="sidebar-links">
+            <a href="main.html">Home</a>
+            <a href="Features.html">Features</a>
+            <a href="Contact.html">Contact</a>
+            <a href="Signup.html">Sign Up</a>
+        </nav>
+    </div>
+    
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1>Advanced AI Code Detection & Analysis</h1>
+            <p>Detect, analyze, and fix errors in your AI-generated code with our industry-leading detection technology. Over 99% accuracy in identifying AI-generated source code.</p>
+        </section>
+        
+        <!-- Code Analyzer Box -->
+        <section>
+            <div class="analyzer-box">
+                <div class="analyzer-header">
+                    <h2>Paste Your Code Here</h2>
+                    <select id="language-select" class="language-select">
+                        <option value="auto">Auto-detect</option>
+                        <option value="python">Python</option>
+                        <option value="javascript">JavaScript</option>
+                        <option value="java">Java</option>
+                        <option value="c">C</option>
+                        <option value="cpp">C++</option>
+                        <option value="csharp">C#</option>
+                        <option value="php">PHP</option>
+                        <option value="ruby">Ruby</option>
+                        <option value="go">Go</option>
+                        <option value="swift">Swift</option>
+                        <option value="sql">SQL</option>
+                    </select>
+                </div>
+                <textarea id="code-input" class="code-input" placeholder="Paste your code here to analyze for errors, vulnerabilities, and AI-generated patterns..."></textarea>
+                <button id="analyze-btn" class="analyze-btn">Analyze Code</button>
+                
+                <div class="result-box" id="resultBox">
+                    <h3><i class="fas fa-search"></i>Analysis Results</h3>
+                    <div id="resultsContent"></div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Key Features -->
+        <section class="features" id="features">
+            <h2 class="section-title">Key Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h3>Complete AI Model Coverage</h3>
+                    <p>Go beyond a simple ChatGPT Checker—get detection for all AI models, including Gemini, Claude, and any new models as they are released.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <h3>Unprecedented Accuracy</h3>
+                    <p>The AI Detector boasts over 99% accuracy and an industry-low false positive rate of just 0.2%.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Military-Grade Security</h3>
+                    <p>All our products boast military-grade security, GDPR compliance, and SOC 2 and SOC 3 certification.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <h3>AI-generated Source Code Detection</h3>
+                    <p>Thoroughly scans AI-generated code for potential issues, including licensing violations and security vulnerabilities.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-sliders-h"></i>
+                    </div>
+                    <h3>Customizable Sensitivity</h3>
+                    <p>Customize AI detection to suit your needs, from general approach to refined search for subtle changes.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h3>Multi-language Support</h3>
+                    <p>Detect AI-generated content across multiple programming languages and human languages.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Slideshow -->
+        <div class="slideshow">
+            <div class="slides" id="slides">
+                <div class="slide">
+                    <h3>AI Model Training</h3>
+                    <p>Safeguard your AI system by ensuring your models are trained exclusively on human-written content, not AI-generated.</p>
+                </div>
+                <div class="slide">
+                    <h3>Academic Integrity</h3>
+                    <p>Check for AI writing and verify authenticity within all your academic content, from long-form essays to source code.</p>
+                </div>
+                <div class="slide">
+                    <h3>Governance & Compliance</h3>
+                    <p>Mitigate risks, protect your copyright and IP, and establish guardrails for responsible GenAI adoption across your organization.</p>
+                </div>
+                <div class="slide">
+                    <h3>IP & Copyright Protection</h3>
+                    <p>Preserve your intellectual property from unauthorized use and ensure full copyright compliance.</p>
+                </div>
+            </div>
+            <div class="slide-controls">
+                <button class="slide-btn" id="prevBtn">Previous</button>
+                <button class="slide-btn" id="nextBtn">Next</button>
+            </div>
+        </div>
+        
+        <!-- Language Support -->
+        <section class="languages" id="languages">
+            <h2 class="section-title">AI Detection Across Multiple Languages</h2>
+            <p>Our detector supports a wide range of programming and human languages with high accuracy.</p>
+            
+            <div class="language-list">
+                <div class="language-item">Java</div>
+                <div class="language-item">JavaScript</div>
+                <div class="language-item">Go</div>
+                <div class="language-item">Python</div>
+                <div class="language-item">R</div>
+                <div class="language-item">PHP</div>
+                <div class="language-item">MATLAB</div>
+                <div class="language-item">Ruby</div>
+                <div class="language-item">SQL</div>
+                <div class="language-item">Swift</div>
+                <div class="language-item">Perl</div>
+                <div class="language-item">CSS</div>
+                <div class="language-item">Rust</div>
+                <div class="language-item">Scala</div>
+                <div class="language-item">C and C++</div>
+                <div class="language-item">Kotlin</div>
+                <div class="language-item">Machine languages</div>
+                <div class="language-item">F#</div>
+            </div>
+        </section>
+        
+        <!-- FAQ -->
+        <section class="faq" id="faq">
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How is it possible to determine if something is AI-generated?</span>
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>When a Language Model writes code or text, it uses all its pre-training data to make a response based on statistics. This is significantly different from how humans write. To our AI detector, the presence of an AI generator becomes clear when compared to a large collection of human writing and coding patterns.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>What models can you detect?</span>
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>We can detect code and text generated by all major AI models including ChatGPT, Gemini, Claude, and others. Our system is continuously updated as new models are released.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How was the AI detection model trained?</span>
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Our model was trained on a vast dataset of both human-written and AI-generated code and text across multiple languages. We use advanced machine learning techniques to identify subtle patterns that distinguish human work from AI-generated content.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How do you avoid false accusations?</span>
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>With our industry-low false positive rate of just 0.2%, we minimize incorrect detections. Our system provides confidence scores rather than binary determinations, allowing users to make informed decisions based on the results.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>Solutions</h3>
+                <ul>
+                    <li><a href="blog.html">My Blog Page</a></li>
+                    <li><a href="Governance.html">Governance & Compliance</a></li>
+                    <li><a href="LLM.html">Unauthorized LLM Usage</a></li>
+                    <li><a href="Ai model.html">AI Model Training</a></li>
+                    <li><a href="IP and copyright.html">IP & Copyright</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Products</h3>
+                <ul>
+                    <li><a href="Ai detecter.html">AI Detector</a></li>
+                    <li><a href="Plagiarism.html">Plagiarism Checker</a></li>
+                    <li><a href="Ai assitant.html">Writing Assistant</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Company</h3>
+                <ul>
+                    <li><a href="About.html">About Us</a></li>
+                    <li><a href="News.html">News & Media</a></li>
+                    <li><a href="Careers.html">Careers</a></li>
+                    <li><a href="Contact.html">Contact Us</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Connect With Us</h3>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-linkedin"></i></a> 
+                    <a href="https://www.facebook.com/share/1PPoiiYR2x/" target="_blank"><i class="fab fa-facebook"></i></a>
+                    <a href="https://www.instagram.com/m_o_h_i_t.sharma._52?igsh=MTg3NDBydHhucDBuYQ==" target="_blank"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-github"></i></a>
+                </div>
+                
+                <p style="margin-top: 1rem;">WIT college Gurugram<br>Mobile No = +91 9053318503<br>
+                Mail=mohitkumar905331@gmail.com</p>
+            </div>
+        </div>
+        
+        <div class="copyright">
+            <p>© 2025 AI Code Detector. All rights reserved. | <a href="Tearmanduses.html">Terms of Use</a> | <a href="Privacy.html">Privacy Policy</a></p>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+    <script src="code_analyzer.js"></script>
+</body>
+</html>

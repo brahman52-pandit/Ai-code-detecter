@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Detector | Identify AI-Generated Content</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+   <link rel="stylesheet" href="Ai detecter.css".css">
+   <style>
+        :root {
+            --primary-color: #4f46e5;
+            --secondary-color: #10b981;
+            --dark-color: #1e293b;
+            --light-color: #f8fafc;
+            --gray-color: #94a3b8;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f1f5f9;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        
+        
+        /* Navbar Styles */
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        nav ul li a {
+            text-decoration: none;
+            color: var(--dark-color);
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 0.5rem 0;
+            position: relative;
+        }
+        
+        nav ul li a:hover {
+            color: var(--primary-color);
+        }
+        
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary-color);
+            transition: width 0.3s;
+        }
+        
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+        
+        .cta-button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        
+        .cta-button:hover {
+            background-color: #4338ca;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #e0e7ff 0%, #f0fdf4 100%);
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+        
+        .hero-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .hero h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+        }
+        
+        .hero p {
+            font-size: 1.1rem;
+            color: var(--gray-color);
+            margin-bottom: 2rem;
+        }
+        
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+        
+        .detector-section {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--dark-color);
+            text-align: center;
+        }
+        
+        .detector-box {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .input-area {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 1rem;
+            border: 1px solid var(--gray-color);
+            border-radius: 0.375rem;
+            resize: vertical;
+            font-size: 1rem;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+        
+        .detect-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 0.375rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .detect-button:hover {
+            background-color: #4338ca;
+        }
+        
+        .clear-button {
+            background-color: white;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            padding: 0.75rem 2rem;
+            border-radius: 0.375rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .clear-button:hover {
+            background-color: #eef2ff;
+        }
+        
+        .result-area {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border-radius: 0.375rem;
+            background-color: #f8fafc;
+            display: none;
+        }
+        
+        .result-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+        }
+        
+        .result-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .confidence-meter {
+            flex: 1;
+            height: 10px;
+            background-color: #e2e8f0;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .confidence-level {
+            height: 100%;
+            background: linear-gradient(90deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+            width: 0;
+            transition: width 1s ease-in-out;
+        }
+        
+        .confidence-percentage {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        /* Features Section */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .feature-card {
+            background-color: white;
+            border-radius: 0.5rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .feature-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+        }
+        
+        .feature-description {
+            color: var(--gray-color);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 3rem 2rem 1.5rem;
+        }
+        
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+        
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-logo img {
+            height: 30px;
+        }
+        
+        .footer-logo h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .footer-about p {
+            color: #cbd5e1;
+            margin-bottom: 1.5rem;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .social-links a {
+            color: white;
+            font-size: 1.25rem;
+            transition: color 0.3s;
+        }
+        
+        .social-links a:hover {
+            color: var(--secondary-color);
+        }
+        
+        .footer-links h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: white;
+        }
+        
+        .footer-links ul {
+            list-style: none;
+        }
+        
+        .footer-links ul li {
+            margin-bottom: 0.75rem;
+        }
+        
+        .footer-links ul li a {
+            color: #cbd5e1;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links ul li a:hover {
+            color: var(--secondary-color);
+        }
+        
+        .footer-newsletter h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: white;
+        }
+        
+        .newsletter-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .newsletter-form input {
+            padding: 0.75rem;
+            border-radius: 0.375rem;
+            border: none;
+            font-size: 1rem;
+        }
+        
+        .newsletter-form input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3);
+        }
+        
+        .newsletter-form button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .newsletter-form button:hover {
+            background-color: #0d9e6e;
+        }
+        
+        .copyright {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #334155;
+            color: #94a3b8;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            nav ul {
+                gap: 1rem;
+            }
+            
+            .hero h2 {
+                font-size: 2rem;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .detect-button, .clear-button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header with Navbar -->
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <i class="fas fa-brain logo-icon"></i>
+                <h1>AI Detector</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="main.html">Home</a></li>
+                    <li><a href="Contact.html">Contact</a></li>
+                    <li><a href="Features.html">Features</a></li>
+                    <li><a href="#">Pricing</a></li>
+                    <li><a href="Signup.html" class="cta-button">Try Now</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <h2>Detect AI-Generated Content with Precision</h2>
+            <p>Our advanced AI detection tool helps you identify whether content was created by humans or artificial intelligence with over 95% accuracy.</p>
+        </div>
+    </section>
+    
+    <!-- Main Content -->
+    <main class="container">
+        <section class="detector-section">
+            <h2 class="section-title">AI Content Detector</h2>
+            <div class="detector-box">
+                <div class="input-area">
+                    <textarea id="content-input" placeholder="Paste your text here to check if it was written by AI... (Minimum 50 characters for accurate detection)"></textarea>
+                    <div class="button-group">
+                        <button id="detect-button" class="detect-button">Detect AI Content</button>
+                        <button id="clear-button" class="clear-button">Clear Text</button>
+                    </div>
+                </div>
+                
+                <div id="result-area" class="result-area">
+                    <h3 class="result-title">Detection Result</h3>
+                    <div class="result-content">
+                        <div class="confidence-meter">
+                            <div id="confidence-level" class="confidence-level"></div>
+                        </div>
+                        <span id="confidence-percentage" class="confidence-percentage">0%</span>
+                    </div>
+                    <p id="result-text" style="margin-top: 1rem;"></p>
+                </div>
+            </div>
+        </section>
+        
+        <h2 class="section-title">Why Choose Our AI Detector</h2>
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">🔍</div>
+                <h3 class="feature-title">High Accuracy</h3>
+                <p class="feature-description">Our advanced algorithms provide detection accuracy of over 95%, helping you reliably identify AI-generated content.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3 class="feature-title">Fast Analysis</h3>
+                <p class="feature-description">Get results in seconds with our lightning-fast processing that analyzes text patterns and linguistic features.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🛡️</div>
+                <h3 class="feature-title">Multi-Model Detection</h3>
+                <p class="feature-description">Detects content from ChatGPT, GPT-4, Bard, Claude, and other popular AI writing tools.</p>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-about">
+                <div class="footer-logo">
+                    <img src="https://via.placeholder.com/30" alt="AI Detector Logo">
+                    <h2>AI Detector</h2>
+                </div>
+                <p>The most accurate tool for detecting AI-generated content, helping maintain authenticity in the digital world.</p>
+                <div class="social-links">
+                    <a href="#">📱</a>
+                    <a href="#">📘</a>
+                    <a href="#">🐦</a>
+                    <a href="#">🔗</a>
+                </div>
+            </div>
+            
+            <div class="footer-links">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="main.html">Home</a></li>
+                    <li><a href="About.css">About Us</a></li>
+                    <li><a href="#">How It Works</a></li>
+                    
+                    <li><a href="Contact.html">Contact</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-links">
+                <h3>Resources</h3>
+                <ul>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="Careers.html">Help Center</a></li>
+                    <li><a href="Privacy.html">Privacy Policy</a></li>
+                    <li><a href="Tearmanduses.html">Terms of Service</a></li>
+                    <li><a href="#">Pricing</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-newsletter">
+                <h3>Subscribe to Our Newsletter</h3>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Your email address">
+                    <button type="submit">Subscribe</button>
+                </form>
+                <p style="margin-top: 1rem; color: #cbd5e1; font-size: 0.875rem;">Get the latest updates on AI detection technology.</p>
+            </div>
+        </div>
+        
+        <div class="copyright">
+            <p>&copy; 2023 AI Detector. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const detectButton = document.getElementById('detect-button');
+            const clearButton = document.getElementById('clear-button');
+            const contentInput = document.getElementById('content-input');
+            const resultArea = document.getElementById('result-area');
+            const confidenceLevel = document.getElementById('confidence-level');
+            const confidencePercentage = document.getElementById('confidence-percentage');
+            const resultText = document.getElementById('result-text');
+            
+            // Detect button click handler
+            detectButton.addEventListener('click', function() {
+                const text = contentInput.value.trim();
+                
+                if (text.length < 50) {
+                    alert('Please enter at least 50 characters for accurate detection.');
+                    return;
+                }
+                
+                // Show loading state
+                detectButton.disabled = true;
+                detectButton.textContent = 'Analyzing...';
+                
+                // Simulate API call with timeout
+                setTimeout(function() {
+                    // For demo purposes, we'll generate a random result
+                    const randomScore = Math.floor(Math.random() * 100);
+                    const isAI = randomScore > 50;
+                    
+                    // Update UI with results
+                    confidenceLevel.style.width = `${randomScore}%`;
+                    confidencePercentage.textContent = `${randomScore}%`;
+                    
+                    if (isAI) {
+                        resultText.textContent = `This text is likely AI-generated (${randomScore}% confidence). Our analysis detected patterns consistent with language models like GPT.`;
+                    } else {
+                        resultText.textContent = `This text appears to be human-written (${100 - randomScore}% confidence). Our analysis didn't detect significant AI patterns.`;
+                    }
+                    
+                    // Show results
+                    resultArea.style.display = 'block';
+                    
+                    // Reset button
+                    detectButton.disabled = false;
+                    detectButton.textContent = 'Detect AI Content';
+                }, 1500);
+            });
+            
+            // Clear button click handler
+            clearButton.addEventListener('click', function() {
+                contentInput.value = '';
+                resultArea.style.display = 'none';
+                confidenceLevel.style.width = '0%';
+                confidencePercentage.textContent = '0%';
+                resultText.textContent = '';
+            });
+        });
+    </script>
+</body>
+</html>

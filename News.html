@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News & Media - AI Code Detector</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="News.css">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --secondary: #10b981;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #94a3b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        /* Header (consistent with main site) */
+        header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+            color: var(--secondary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        /* Main Content */
+        main {
+            margin-top: 80px;
+            padding: 2rem;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Hero Section */
+        .news-hero {
+            text-align: center;
+            padding: 4rem 0;
+            background: linear-gradient(135deg, rgba(79,70,229,0.1) 0%, rgba(16,185,129,0.1) 100%);
+            border-radius: 15px;
+            margin-bottom: 3rem;
+        }
+
+        .news-hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            background: linear-gradient(to right, #4f46e5, #10b981);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .news-hero p {
+            font-size: 1.2rem;
+            color: var(--gray);
+            max-width: 800px;
+            margin: 0 auto 2rem;
+        }
+
+        /* News Filters */
+        .news-filters {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.6rem 1.2rem;
+            border: 2px solid var(--primary);
+            background: transparent;
+            color: var(--primary);
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* News Grid */
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .news-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .news-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .news-image {
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .news-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .news-card:hover .news-image img {
+            transform: scale(1.05);
+        }
+
+        .news-content {
+            padding: 1.5rem;
+        }
+
+        .news-category {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            background-color: var(--secondary);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+        }
+
+        .news-category.press {
+            background-color: #3b82f6;
+        }
+
+        .news-category.blog {
+            background-color: #f59e0b;
+        }
+
+        .news-category.event {
+            background-color: #ec4899;
+        }
+
+        .news-date {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .news-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .news-excerpt {
+            color: var(--gray);
+            margin-bottom: 1rem;
+        }
+
+        .read-more {
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .read-more i {
+            transition: transform 0.3s;
+        }
+
+        .read-more:hover i {
+            transform: translateX(5px);
+        }
+
+        /* Featured Article */
+        .featured-article {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            background-color: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 4rem;
+        }
+
+        .featured-image {
+            height: 100%;
+        }
+
+        .featured-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .featured-content {
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .featured-badge {
+            display: inline-block;
+            padding: 0.3rem 1rem;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .featured-title {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .featured-excerpt {
+            font-size: 1.1rem;
+            color: var(--gray);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Press Mentions */
+        .press-section {
+            margin-bottom: 4rem;
+        }
+
+        .press-logos {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 3rem;
+            margin-top: 2rem;
+        }
+
+        .press-logo {
+            height: 40px;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+            filter: grayscale(100%);
+        }
+
+        .press-logo:hover {
+            opacity: 1;
+            filter: grayscale(0%);
+        }
+
+        .press-logo img {
+            height: 100%;
+            width: auto;
+            object-fit: contain;
+        }
+
+        /* Newsletter */
+        .newsletter {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 3rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .newsletter h2 {
+            margin-bottom: 1rem;
+        }
+
+        .newsletter p {
+            max-width: 600px;
+            margin: 0 auto 1.5rem;
+            opacity: 0.9;
+        }
+
+        .newsletter-form {
+            display: flex;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .newsletter-input {
+            flex: 1;
+            padding: 0.8rem 1.2rem;
+            border: none;
+            border-radius: 30px 0 0 30px;
+            font-size: 1rem;
+        }
+
+        .newsletter-btn {
+            padding: 0 1.5rem;
+            background-color: var(--dark);
+            color: white;
+            border: none;
+            border-radius: 0 30px 30px 0;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .newsletter-btn:hover {
+            background-color: #1e293b;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .featured-article {
+                grid-template-columns: 1fr;
+            }
+            
+            .featured-image {
+                height: 300px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .news-hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .news-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .press-logos {
+                gap: 2rem;
+            }
+            
+            .press-logo {
+                height: 30px;
+            }
+            
+            .newsletter-form {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .newsletter-input, .newsletter-btn {
+                border-radius: 30px;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="navbar">
+            <div class="logo">
+                <i class="fas fa-brain logo-icon"></i>
+                <span>AI Code Detector</span>
+            </div>
+            <nav class="nav-links">
+                <a href="main.html">Home</a>
+                <a href="about.html">About</a>
+                <a href="Contact.html">Contact</a>
+                <a href="Signup.html">Sign UP</a>
+            </nav>
+            <button class="mobile-menu-btn" id="menuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section class="news-hero">
+            <h1>News & Media</h1>
+            <p>Stay updated with the latest developments, press coverage, and insights about AI Code Detector and the future of AI-assisted programming.</p>
+        </section>
+
+        <!-- Featured Article -->
+        <section class="featured-article">
+            <div class="featured-image">
+                <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="AI Code Analysis">
+            </div>
+            <div class="featured-content">
+                <span class="featured-badge">Featured Story</span>
+                <h2 class="featured-title">AI Code Detector Raises $5M to Expand Detection Capabilities</h2>
+                <p class="featured-excerpt">Our startup has secured Series A funding to enhance our AI models and expand language support, helping developers worldwide identify and fix AI-generated code more effectively.</p>
+                <a href="#" class="read-more">
+                    Read full article
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </section>
+
+        <!-- News Filters -->
+        <div class="news-filters">
+            <button class="filter-btn active" data-filter="all">All News</button>
+            <button class="filter-btn" data-filter="press">Press Releases</button>
+            <button class="filter-btn" data-filter="blog">Blog Posts</button>
+            <button class="filter-btn" data-filter="event">Events</button>
+        </div>
+
+        <!-- News Grid -->
+        <div class="news-grid">
+            <!-- Press Release 1 -->
+            <div class="news-card" data-category="press">
+                <div class="news-image">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="AI Conference">
+                </div>
+                <div class="news-content">
+                    <span class="news-category press">Press Release</span>
+                    <div class="news-date">June 15, 2024</div>
+                    <h3 class="news-title">AI Code Detector Launches Enterprise Version</h3>
+                    <p class="news-excerpt">New features include team collaboration tools, API integrations, and enhanced security for corporate environments.</p>
+                    <a href="#" class="read-more">
+                        Read more
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Blog Post 1 -->
+            <div class="news-card" data-category="blog">
+                <div class="news-image">
+                    <img src="https://images.unsplash.com/photo-1624953587687-daf255b6b80a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Code Analysis">
+                </div>
+                <div class="news-content">
+                    <span class="news-category blog">Blog Post</span>
+                    <div class="news-date">May 28, 2024</div>
+                    <h3 class="news-title">How We Detect AI-Generated Code Patterns</h3>
+                    <p class="news-excerpt">A technical deep dive into our machine learning models and the unique signatures we look for in AI-generated code.</p>
+                    <a href="#" class="read-more">
+                        Read more
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Event 1 -->
+            <div class="news-card" data-category="event">
+                <div class="news-image">
+                    <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Tech Conference">
+                </div>
+                <div class="news-content">
+                    <span class="news-category event">Event</span>
+                    <div class="news-date">April 10, 2024</div>
+                    <h3 class="news-title">Join Us at DevCon 2024</h3>
+                    <p class="news-excerpt">We'll be showcasing our latest AI detection technology and hosting workshops on secure coding practices.</p>
+                    <a href="#" class="read-more">
+                        Read more
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Press Release 2 -->
+            <div class="news-card" data-category="press">
+                <div class="news-image">
+                    <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Media Coverage">
+                </div>
+                <div class="news-content">
+                    <span class="news-category press">Press Release</span>
+                    <div class="news-date">March 22, 2024</div>
+                    <h3 class="news-title">AI Code Detector Recognized as "Most Innovative Tool"</h3>
+                    <p class="news-excerpt">Tech Awards 2024 honors our platform for its groundbreaking approach to code quality assurance.</p>
+                    <a href="#" class="read-more">
+                        Read more
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Blog Post 2 -->
+            <div class="news-card" data-category="blog">
+                <div class="news-image">
+                    <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Programming">
+                </div>
+                <div class="news-content">
+                    <span class="news-category blog">Blog Post</span>
+                    <div class="news-date">February 15, 2024</div>
+                    <h3 class="news-title">The Ethics of AI-Generated Code in Education</h3>
+                    <p class="news-excerpt">Exploring how universities are using our technology to maintain academic integrity while embracing AI tools.</p>
+                    <a href="#" class="read-more">
+                        Read more
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Event 2 -->
+            <div class="news-card" data-category="event">
+                <div class="news-image">
+                    <img src="https://images.unsplash.com/photo-1505373877841-8d25f7d46678?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Webinar">
+                </div>
+                <div class="news-content">
+                    <span class="news-category event">Event</span>
+                    <div class="news-date">January 18, 2024</div>
+                    <h3 class="news-title">Live Webinar: AI Code Best Practices</h3>
+                    <p class="news-excerpt">Our CTO will demonstrate how to effectively use AI-generated code while maintaining quality and security.</p>
+                    <a href="#" class="read-more">
+                        Read more
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Press Mentions -->
+        <section class="press-section">
+            <h2 class="section-title">Featured In</h2>
+            <div class="press-logos">
+                <div class="press-logo">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/TechCrunch_logo.svg/1200px-TechCrunch_logo.svg.png" alt="TechCrunch">
+                </div>
+                <div class="press-logo">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/The_New_York_Times_Logo.svg/1200px-The_New_York_Times_Logo.svg.png" alt="New York Times">
+                </div>
+                <div class="press-logo">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Wired_logo.svg/1200px-Wired_logo.svg.png" alt="Wired">
+                </div>
+                <div class="press-logo">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Gizmodo_Logo.png/1200px-Gizmodo_Logo.png" alt="Gizmodo">
+                </div>
+                <div class="press-logo">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/The_Verge_logo_2016.svg/1200px-The_Verge_logo_2016.svg.png" alt="The Verge">
+                </div>
+            </div>
+        </section>
+
+        <!-- Newsletter -->
+        <section class="newsletter">
+            <h2>Stay Updated</h2>
+            <p>Subscribe to our newsletter for the latest news, product updates, and insights about AI in software development.</p>
+            <form class="newsletter-form">
+                <input type="email" class="newsletter-input" placeholder="Your email address" required>
+                <button type="submit" class="newsletter-btn">Subscribe</button>
+            </form>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>Solutions</h3>
+                <ul>
+                    <li><a href="blog.html">My Blog Page</a></li>
+                    <li><a href="Governance.html">Governance & Compliance</a></li>
+                    <li><a href="LLM.html">Unauthorized LLM Usage</a></li>
+                    <li><a href="Ai model.html">AI Model Training</a></li>
+                    <li><a href="IP and copyright.html">IP & Copyright</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Resources</h3>
+                <ul>
+                    <li><a href="Ai detecter.html">AI Detector</a></li>
+                    <li><a href="Plagiarism.html">Plagiarism Checker</a></li>
+                    <li><a href="Ai assitant.html">Writing Assistant</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Company</h3>
+                <ul>
+                    <li><a href="About.html">About Us</a></li>
+                    <li><a href="News.html">News & Media</a></li>
+                    <li><a href="Careers.html">Careers</a></li>
+                    <li><a href="Contact.html">Contact Us</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Connect With Us</h3>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-github"></i></a>
+                </div>
+                <p style="margin-top: 1rem;">WIT College Gurugram<br>
+                    Email: mohitkumar905331@gmail.com<br>
+                    Phone: +91 9053318503
+            </div>
+        </div>
+        
+        <div class="copyright">
+            <p>© 2025 AI Code Detector. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('menuBtn').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('open');
+        });
+
+        // News filtering functionality
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const newsCards = document.querySelectorAll('.news-card');
+        
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Update active button
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                
+                const filter = button.dataset.filter;
+                
+                // Filter news cards
+                newsCards.forEach(card => {
+                    if (filter === 'all' || card.dataset.category === filter) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Newsletter form submission
+        const newsletterForm = document.querySelector('.newsletter-form');
+        newsletterForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = this.querySelector('input').value;
+            
+            // Here you would typically send the email to your server
+            alert(`Thank you for subscribing with ${email}! You'll receive our next newsletter.`);
+            this.reset();
+        });
+
+        // Animation on scroll
+        const animateOnScroll = () => {
+            const elements = document.querySelectorAll('.news-card, .press-logo');
+            
+            elements.forEach(element => {
+                const elementPosition = element.getBoundingClientRect().top;
+                const screenPosition = window.innerHeight / 1.3;
+                
+                if (elementPosition < screenPosition) {
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                }
+            });
+        };
+
+        // Set initial state for animated elements
+        document.querySelectorAll('.news-card, .press-logo').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        });
+
+        // Run on load and scroll
+        window.addEventListener('load', animateOnScroll);
+        window.addEventListener('scroll', animateOnScroll);
+    </script>
+</body>
+</html>

@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLMGuard - Detect & Prevent Unauthorized LLM Usage</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --secondary: #10b981;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #94a3b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        /* Header & Navbar */
+        header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+            color: var(--secondary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--dark);
+            cursor: pointer;
+        }
+
+        /* Mobile Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100vh;
+            background-color: white;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+            transition: right 0.3s ease;
+            z-index: 1001;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .sidebar.open {
+            right: 0;
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .close-sidebar {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .sidebar-links {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .sidebar-links a {
+            text-decoration: none;
+            color: var(--dark);
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--gray);
+        }
+
+        /* Main Content */
+        main {
+            margin-top: 80px;
+            padding: 2rem;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Hero Section */
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 5rem 0;
+            background: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.9)), url('https://images.unsplash.com/photo-1677442135136-760c813a743e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80');
+            background-size: cover;
+            background-position: center;
+            border-radius: 10px;
+            margin-bottom: 3rem;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--dark);
+            max-width: 800px;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--primary);
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #4338ca;
+            transform: translateY(-3px);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 3rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--primary);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            color: var(--secondary);
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        /* Detection Tool */
+        .detection-tool {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .tool-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .tool-header h2 {
+            color: var(--primary);
+        }
+
+        .content-type-selector {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .content-type-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--gray);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .content-type-btn.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .code-input, .text-input {
+            width: 100%;
+            height: 200px;
+            padding: 1rem;
+            border: 1px solid var(--gray);
+            border-radius: 5px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1rem;
+            resize: vertical;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .code-input.active, .text-input.active {
+            display: block;
+        }
+
+        .analyze-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .analyze-btn:hover {
+            background-color: #4338ca;
+        }
+
+        .result-box {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border-radius: 5px;
+            background-color: #f1f5f9;
+            display: none;
+        }
+
+        .result-box h3 {
+            margin-bottom: 1rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Model Coverage */
+        .model-coverage {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .models-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .model-card {
+            padding: 1.5rem;
+            border-radius: 8px;
+            background-color: var(--light);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .model-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .model-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        /* FAQ */
+        .faq {
+            padding: 3rem 0;
+        }
+
+        .faq-container {
+            margin-top: 2rem;
+        }
+
+        .faq-item {
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .faq-item:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .faq-question {
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--primary);
+            transition: color 0.3s ease;
+        }
+
+        .faq-question:hover {
+            color: var(--secondary);
+        }
+
+        .faq-question i {
+            transition: transform 0.3s ease;
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            padding: 0 1.5rem;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+            color: var(--dark);
+            border-top: 1px solid transparent;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 500px;
+            padding: 1.5rem;
+            border-top: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .faq-item.active .faq-question i {
+            transform: rotate(45deg);
+            color: var(--secondary);
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 3rem 2rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-column h3 {
+            margin-bottom: 1rem;
+            color: var(--secondary);
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-column a {
+            color: var(--gray);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-column a:hover {
+            color: white;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--gray);
+            color: var(--gray);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .tool-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .content-type-selector {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header & Navbar -->
+    <header>
+        <div class="navbar">
+            <div class="logo">
+                <i class="fas fa-robot logo-icon"></i>
+                <span>LLMGuard</span>
+            </div>
+            <nav class="nav-links">
+                <a href="main.html">Home</a>
+                <a href="Features.html">Features</a>
+                <a href="Ai detecter.html">Detection</a>
+                
+                <a href="Signup.html">Signup</a>
+            </nav>
+            <button class="mobile-menu-btn" id="menuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+    
+    <!-- Mobile Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Menu</h3>
+            <button class="close-sidebar" id="closeSidebar">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <nav class="sidebar-links">
+            <a href="#home">Home</a>
+            <a href="#features">Features</a>
+            <a href="#detection">Detection</a>
+            <a href="#models">Models</a>
+            <a href="#faq">FAQ</a>
+        </nav>
+    </div>
+    
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section class="hero" id="home">
+            <h1>Detect & Prevent Unauthorized LLM Usage</h1>
+            <p>Identify content generated by large language models without proper authorization or attribution using our advanced detection technology.</p>
+            <a href="#detection" class="btn">Scan Content Now</a>
+        </section>
+        
+        <!-- Features Section -->
+        <section class="features" id="features">
+            <h2 class="section-title">Key Detection Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>Model Fingerprinting</h3>
+                    <p>Identify which specific LLM was used to generate content based on unique stylistic patterns.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <h3>Code Attribution</h3>
+                    <p>Detect AI-generated code snippets and their likely source models with high accuracy.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <h3>Text Analysis</h3>
+                    <p>Spot LLM-generated text content across documents, articles, and other written materials.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Policy Enforcement</h3>
+                    <p>Ensure compliance with organizational policies on LLM usage and content creation.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Usage Analytics</h3>
+                    <p>Track patterns of LLM usage across your organization or codebase over time.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-gavel"></i>
+                    </div>
+                    <h3>Legal Compliance</h3>
+                    <p>Identify potential copyright and licensing violations in AI-generated content.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Detection Tool -->
+        <section class="detection-tool" id="detection">
+            <div class="tool-header">
+                <h2>LLM Content Detector</h2>
+                <select class="model-select">
+                    <option>All Models</option>
+                    <option>ChatGPT</option>
+                    <option>GPT-4</option>
+                    <option>Bard</option>
+                    <option>Claude</option>
+                    <option>LLaMA</option>
+                </select>
+            </div>
+            
+            <div class="content-type-selector">
+                <div class="content-type-btn active" data-target="text">Text Content</div>
+                <div class="content-type-btn" data-target="code">Source Code</div>
+            </div>
+            
+            <textarea class="text-input active" placeholder="Paste text content here to check for LLM usage..."></textarea>
+            <textarea class="code-input" placeholder="Paste source code here to check for AI generation..."></textarea>
+            
+            <button class="analyze-btn">Analyze Content</button>
+            
+            <div class="result-box">
+                <h3><i class="fas fa-search"></i> Detection Results</h3>
+                <div id="resultsContent">
+                    <p>Analysis results will appear here. Our system will examine the content for patterns indicative of LLM generation and identify the likely model used.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Model Coverage -->
+        <section class="model-coverage" id="models">
+            <h2 class="section-title">Supported LLM Models</h2>
+            <p>We detect content generated by all major large language models with industry-leading accuracy.</p>
+            
+            <div class="models-grid">
+                <div class="model-card">
+                    <div class="model-icon">
+                        <i class="fab fa-openai"></i>
+                    </div>
+                    <h3>ChatGPT</h3>
+                    <p>All versions including GPT-3.5 and GPT-4</p>
+                </div>
+                
+                <div class="model-card">
+                    <div class="model-icon">
+                        <i class="fas fa-google"></i>
+                    </div>
+                    <h3>Bard</h3>
+                    <p>Google's PaLM-based models</p>
+                </div>
+                
+                <div class="model-card">
+                    <div class="model-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3>Claude</h3>
+                    <p>Anthropic's AI assistant models</p>
+                </div>
+                
+                <div class="model-card">
+                    <div class="model-icon">
+                        <i class="fab fa-meta"></i>
+                    </div>
+                    <h3>LLaMA</h3>
+                    <p>Meta's open-source models</p>
+                </div>
+                
+                <div class="model-card">
+                    <div class="model-icon">
+                        <i class="fas fa-code-branch"></i>
+                    </div>
+                    <h3>Codex</h3>
+                    <p>GitHub Copilot's underlying model</p>
+                </div>
+                
+                <div class="model-card">
+                    <div class="model-icon">
+                        <i class="fas fa-cubes"></i>
+                    </div>
+                    <h3>Custom Models</h3>
+                    <p>Fine-tuned and proprietary variants</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- FAQ Section -->
+        <section class="faq" id="faq">
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How can you detect LLM-generated content?</span>
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Our system analyzes multiple linguistic and stylistic features including perplexity, burstiness, token probabilities, and other statistical patterns that distinguish machine-generated content from human writing. Each LLM leaves unique fingerprints in its output.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>What's considered "unauthorized" LLM usage?</span>
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Unauthorized usage includes: using LLMs in violation of terms of service, failing to disclose AI-generated content when required, submitting AI work as original human work (academic dishonesty), using proprietary models without license, or violating content policies around plagiarism and copyright.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Can you detect AI-generated code specifically?</span>
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes, our system specializes in detecting AI-generated code patterns with over 95% accuracy. We analyze code structure, commenting patterns, variable naming conventions, and other stylistic elements that differ between human and AI-generated code.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How accurate is your detection system?</span>
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Our current models achieve 98% accuracy in identifying LLM-generated content with a false positive rate below 2%. Accuracy varies slightly between different LLMs, with the highest accuracy for widely-used models like ChatGPT and GPT-4.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>Solutions</h3>
+                <ul>
+                    <li><a href="blog.html">My Blog Page</a></li>
+                    <li><a href="Governance.html">Governance & Compliance</a></li>
+                    <li><a href="LLM.html">Unauthorized LLM Usage</a></li>
+                    <li><a href="Ai model.html">AI Model Training</a></li>
+                    <li><a href="IP and copyright.html">IP & Copyright</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Resources</h3>
+                <ul>
+                    <li><a href="Ai detecter.html">AI Detector</a></li>
+                    <li><a href="Plagiarism.html">Plagiarism Checker</a></li>
+                    <li><a href="Ai assitant.html">Writing Assistant</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Company</h3>
+                <ul>
+                    <li><a href="About.html">About Us</a></li>
+                    <li><a href="News.html">News & Media</a></li>
+                    <li><a href="Careers.html">Careers</a></li>
+                    <li><a href="Contact.html">Contact Us</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Connect</h3>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-github"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#"><i class="fab fa-discord"></i></a>
+                </div>
+                
+                <p style="margin-top: 1rem;">
+                    LLMGuard Technologies<br>
+                    WIT college Gurugram Sohna<br>
+                    Email: mohitkumar905331@gmail.com<br>
+                    Phone: +91 9053318503
+                </p>
+            </div>
+        </div>
+        
+        <div class="copyright">
+            <p>© 2023 LLMGuard. All rights reserved. | <a href="#">Terms</a> | <a href="#">Privacy</a></p>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Sidebar Toggle
+        const menuBtn = document.getElementById('menuBtn');
+        const closeSidebar = document.getElementById('closeSidebar');
+        const sidebar = document.getElementById('sidebar');
+        
+        menuBtn.addEventListener('click', () => {
+            sidebar.classList.add('open');
+        });
+        
+        closeSidebar.addEventListener('click', () => {
+            sidebar.classList.remove('open');
+        });
+        
+        // FAQ Accordion
+        const faqItems = document.querySelectorAll('.faq-item');
+        
+        faqItems.forEach(item => {
+            const question = item.querySelector('.faq-question');
+            
+            question.addEventListener('click', () => {
+                item.classList.toggle('active');
+                
+                const icon = question.querySelector('i');
+                if (item.classList.contains('active')) {
+                    icon.classList.remove('fa-plus');
+                    icon.classList.add('fa-times');
+                } else {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-plus');
+                }
+            });
+        });
+
+        // Content Type Selector
+        const contentTypeBtns = document.querySelectorAll('.content-type-btn');
+        const textInput = document.querySelector('.text-input');
+        const codeInput = document.querySelector('.code-input');
+        
+        contentTypeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                contentTypeBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                const target = btn.dataset.target;
+                textInput.classList.remove('active');
+                codeInput.classList.remove('active');
+                
+                if (target === 'text') {
+                    textInput.classList.add('active');
+                } else {
+                    codeInput.classList.add('active');
+                }
+            });
+        });
+
+        // Detection Tool
+        const analyzeBtn = document.querySelector('.analyze-btn');
+        const resultBox = document.querySelector('.result-box');
+        
+        analyzeBtn.addEventListener('click', () => {
+            const activeInput = document.querySelector('.text-input.active, .code-input.active');
+            const content = activeInput.value.trim();
+            
+            if (content === '') {
+                alert('Please paste some content to analyze');
+                return;
+            }
+            
+            analyzeBtn.textContent = 'Analyzing...';
+            analyzeBtn.disabled = true;
+            
+            // Simulate analysis (in a real app, this would be an API call)
+            setTimeout(() => {
+                const isCode = activeInput.classList.contains('code-input');
+                const randomModel = ['ChatGPT', 'GPT-4', 'Bard', 'Claude'][Math.floor(Math.random() * 4)];
+                const randomConfidence = (Math.random() * 30 + 70).toFixed(0);
+                
+                resultsContent.innerHTML = `
+                    <div class="result-item">
+                        <h4><i class="fas fa-${isCode ? 'code' : 'file-alt'}" style="color: var(--primary);"></i> Analysis Complete</h4>
+                        <p><i class="fas fa-${content.length > 100 ? 'check-circle' : 'exclamation-triangle'}" style="color: ${content.length > 100 ? 'var(--secondary)' : 'orange'}"></i> <strong>Detection Confidence:</strong> ${randomConfidence}% likely LLM-generated</p>
+                        <p><i class="fas fa-brain" style="color: var(--primary);"></i> <strong>Probable Model:</strong> ${randomModel}</p>
+                        
+                        ${content.length > 100 ? `
+                        <p><i class="fas fa-lightbulb" style="color: var(--primary);"></i> <strong>Key Indicators:</strong></p>
+                        <ul>
+                            <li>Consistent stylistic patterns characteristic of ${randomModel}</li>
+                            <li>Statistical anomalies in token distribution</li>
+                            <li>${isCode ? 'Unusual code structure and commenting patterns' : 'Repetitive phrasing and predictable word choices'}</li>
+                        </ul>
+                        ` : '<p><i class="fas fa-info-circle" style="color: var(--gray);"></i> <em>For more accurate results, provide longer content samples (100+ characters)</em></p>'}
+                        
+                        <p><i class="fas fa-shield-alt" style="color: var(--secondary);"></i> <strong>Recommendations:</strong></p>
+                        <ul>
+                            <li>Verify proper attribution if using LLM-generated content</li>
+                            <li>Check compliance with applicable usage policies</li>
+                            <li>${isCode ? 'Review for potential security vulnerabilities' : 'Ensure factual accuracy of generated content'}</li>
+                        </ul>
+                    </div>
+                `;
+                
+                resultBox.style.display = 'block';
+                analyzeBtn.textContent = 'Analyze Content';
+                analyzeBtn.disabled = false;
+                
+                // Scroll to results
+                resultBox.scrollIntoView({ behavior: 'smooth' });
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

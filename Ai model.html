@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Model Training | Build & Train AI Models</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --secondary: #10b981;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #94a3b8;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        /* Header & Navbar */
+        header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+        
+        .logo-icon {
+            font-size: 2rem;
+            color: var(--secondary);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--dark);
+            cursor: pointer;
+        }
+        
+        /* Mobile Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100vh;
+            background-color: white;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+            transition: right 0.3s ease;
+            z-index: 1001;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        
+        .sidebar.open {
+            right: 0;
+        }
+        
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .close-sidebar {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .sidebar-links {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .sidebar-links a {
+            text-decoration: none;
+            color: var(--dark);
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--gray);
+        }
+        
+        /* Main Content */
+        main {
+            margin-top: 80px;
+            padding: 2rem;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Hero Section */
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 3rem 0;
+            background: linear-gradient(135deg, #e0e7ff 0%, #f0fdf4 100%);
+            border-radius: 10px;
+            margin-bottom: 3rem;
+        }
+        
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--gray);
+            max-width: 800px;
+            margin-bottom: 2rem;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            background-color: #4338ca;
+        }
+        
+        .btn-secondary {
+            background-color: white;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #eef2ff;
+        }
+        
+        /* Training Process Section */
+        .process-section {
+            margin-bottom: 3rem;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--primary);
+            font-size: 2rem;
+        }
+        
+        .process-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .process-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+            text-align: center;
+        }
+        
+        .process-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .process-icon {
+            font-size: 2.5rem;
+            color: var(--secondary);
+            margin-bottom: 1rem;
+        }
+        
+        .process-card h3 {
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        /* Features Section */
+        .features {
+            margin-bottom: 3rem;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .feature-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-icon {
+            font-size: 2rem;
+            color: var(--secondary);
+            margin-bottom: 1rem;
+        }
+        
+        .feature-card h3 {
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+        
+        /* Model Types Section */
+        .model-types {
+            margin-bottom: 3rem;
+        }
+        
+        .model-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .tab-btn {
+            padding: 0.5rem 1rem;
+            background-color: white;
+            border: 1px solid var(--gray);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .tab-btn.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .tab-content {
+            display: none;
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Pricing Section */
+        .pricing {
+            margin-bottom: 3rem;
+        }
+        
+        .pricing-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .pricing-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .pricing-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .pricing-card.popular {
+            border: 2px solid var(--secondary);
+            position: relative;
+        }
+        
+        .popular-tag {
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            background-color: var(--secondary);
+            color: white;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 1rem 0;
+        }
+        
+        .price span {
+            font-size: 1rem;
+            color: var(--gray);
+        }
+        
+        .pricing-features {
+            list-style: none;
+            margin: 1.5rem 0;
+        }
+        
+        .pricing-features li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 3rem 2rem;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .footer-column h3 {
+            margin-bottom: 1rem;
+            color: var(--secondary);
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-column a {
+            color: var(--gray);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-column a:hover {
+            color: white;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .social-links a {
+            color: white;
+            font-size: 1.2rem;
+        }
+        
+        .copyright {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--gray);
+            color: var(--gray);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                width: 100%;
+                padding: 0 1rem;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header & Navbar -->
+    <header>
+        <div class="navbar">
+            <div class="logo">
+                <i class="fas fa-brain logo-icon"></i>
+                <span>AI Model Training</span>
+            </div>
+            <nav class="nav-links">
+                <a href="main.html">Home</a>
+                <a href="Features.html">Features</a>
+                <a href="Contact.html">Contact</a>
+                <a href="#pricing">Pricing</a>
+                <a href="Signup.html">Sign Up</a>
+            </nav>
+            <button class="mobile-menu-btn" id="menuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+    
+    <!-- Mobile Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Menu</h3>
+            <button class="close-sidebar" id="closeSidebar">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <nav class="sidebar-links">
+            <a href="#process">Training Process</a>
+            <a href="#features">Features</a>
+            <a href="#models">Model Types</a>
+            <a href="#pricing">Pricing</a>
+            <a href="#contact">Contact</a>
+        </nav>
+    </div>
+    
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section class="hero" id="home">
+            <h1>Advanced AI Model Training Platform</h1>
+            <p>Build, train, and deploy state-of-the-art AI models with our comprehensive platform. Whether you're a beginner or an expert, we have the tools you need to succeed in machine learning.</p>
+            <div class="hero-buttons">
+                <a href="#pricing" class="btn btn-primary">Get Started</a>
+                <a href="#process" class="btn btn-secondary">Learn More</a>
+            </div>
+        </section>
+        
+        <!-- Training Process Section -->
+        <section class="process-section" id="process">
+            <h2 class="section-title">Our AI Training Process</h2>
+            <div class="process-steps">
+                <div class="process-card">
+                    <div class="process-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h3>Data Collection</h3>
+                    <p>Gather and preprocess high-quality datasets tailored to your specific AI application needs.</p>
+                </div>
+                
+                <div class="process-card">
+                    <div class="process-icon">
+                        <i class="fas fa-project-diagram"></i>
+                    </div>
+                    <h3>Model Architecture</h3>
+                    <p>Design optimal neural network architectures using our intuitive visual builder.</p>
+                </div>
+                
+                <div class="process-card">
+                    <div class="process-icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <h3>Training</h3>
+                    <p>Leverage our distributed computing infrastructure for fast and efficient model training.</p>
+                </div>
+                
+                <div class="process-card">
+                    <div class="process-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Evaluation</h3>
+                    <p>Comprehensive performance metrics and visualization tools to assess model quality.</p>
+                </div>
+                
+                <div class="process-card">
+                    <div class="process-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h3>Deployment</h3>
+                    <p>One-click deployment to production with auto-scaling and monitoring included.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Features Section -->
+        <section class="features" id="features">
+            <h2 class="section-title">Key Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-server"></i>
+                    </div>
+                    <h3>Distributed Training</h3>
+                    <p>Scale your training across multiple GPUs and nodes with our optimized distributed training framework.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>AutoML</h3>
+                    <p>Automated machine learning tools to help you find the best model architecture and hyperparameters.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h3>Visualization</h3>
+                    <p>Interactive visualization of model architecture, training metrics, and feature importance.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <h3>Version Control</h3>
+                    <p>Track experiments, compare models, and revert to previous versions with full model lineage.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Security</h3>
+                    <p>Enterprise-grade security with data encryption, role-based access control, and compliance certifications.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-exchange-alt"></i>
+                    </div>
+                    <h3>Integration</h3>
+                    <p>Seamless integration with popular data sources, frameworks, and deployment targets.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Model Types Section -->
+        <section class="model-types" id="models">
+            <h2 class="section-title">Supported Model Types</h2>
+            <div class="model-tabs">
+                <button class="tab-btn active" data-tab="computer-vision">Computer Vision</button>
+                <button class="tab-btn" data-tab="nlp">NLP</button>
+                <button class="tab-btn" data-tab="time-series">Time Series</button>
+                <button class="tab-btn" data-tab="recommendation">Recommendation</button>
+            </div>
+            
+            <div class="tab-content active" id="computer-vision">
+                <h3>Computer Vision Models</h3>
+                <p>Train state-of-the-art models for image classification, object detection, segmentation, and more. Our platform supports:</p>
+                <ul>
+                    <li>Convolutional Neural Networks (CNNs)</li>
+                    <li>Vision Transformers (ViTs)</li>
+                    <li>Generative Adversarial Networks (GANs)</li>
+                    <li>Autoencoders for image compression</li>
+                    <li>Transfer learning from pre-trained models</li>
+                </ul>
+                <p>Applications include medical imaging, autonomous vehicles, quality inspection, and more.</p>
+            </div>
+            
+            <div class="tab-content" id="nlp">
+                <h3>Natural Language Processing Models</h3>
+                <p>Build powerful language models for text classification, generation, translation, and understanding:</p>
+                <ul>
+                    <li>Transformers (BERT, GPT, etc.)</li>
+                    <li>Recurrent Neural Networks (RNNs)</li>
+                    <li>Long Short-Term Memory (LSTM) networks</li>
+                    <li>Attention mechanisms</li>
+                    <li>Pre-trained language models</li>
+                </ul>
+                <p>Applications include chatbots, sentiment analysis, document summarization, and more.</p>
+            </div>
+            
+            <div class="tab-content" id="time-series">
+                <h3>Time Series Models</h3>
+                <p>Develop accurate forecasting models for sequential data:</p>
+                <ul>
+                    <li>ARIMA and SARIMA models</li>
+                    <li>Prophet forecasting</li>
+                    <li>Deep learning approaches (LSTMs, TCNs)</li>
+                    <li>Attention-based models</li>
+                    <li>Anomaly detection</li>
+                </ul>
+                <p>Applications include financial forecasting, IoT sensor analysis, demand prediction, and more.</p>
+            </div>
+            
+            <div class="tab-content" id="recommendation">
+                <h3>Recommendation Systems</h3>
+                <p>Build personalized recommendation engines:</p>
+                <ul>
+                    <li>Collaborative filtering</li>
+                    <li>Content-based filtering</li>
+                    <li>Hybrid approaches</li>
+                    <li>Deep learning recommenders</li>
+                    <li>Reinforcement learning for recommendations</li>
+                </ul>
+                <p>Applications include e-commerce, content platforms, music and video services, and more.</p>
+            </div>
+        </section>
+        
+        <!-- Pricing Section -->
+        <section class="pricing" id="pricing">
+            <h2 class="section-title">Pricing Plans</h2>
+            <div class="pricing-cards">
+                <div class="pricing-card">
+                    <h3>Starter</h3>
+                    <div class="price">$99<span>/month</span></div>
+                    <ul class="pricing-features">
+                        <li>Up to 10 models</li>
+                        <li>50 GPU hours/month</li>
+                        <li>Basic visualization</li>
+                        <li>Email support</li>
+                        <li>Community access</li>
+                    </ul>
+                    <a href="#" class="btn btn-secondary">Choose Plan</a>
+                </div>
+                
+                <div class="pricing-card popular">
+                    <div class="popular-tag">Most Popular</div>
+                    <h3>Professional</h3>
+                    <div class="price">$499<span>/month</span></div>
+                    <ul class="pricing-features">
+                        <li>Up to 50 models</li>
+                        <li>250 GPU hours/month</li>
+                        <li>Advanced visualization</li>
+                        <li>Priority support</li>
+                        <li>Team collaboration</li>
+                    </ul>
+                    <a href="#" class="btn btn-primary">Choose Plan</a>
+                </div>
+                
+                <div class="pricing-card">
+                    <h3>Enterprise</h3>
+                    <div class="price">Custom</div>
+                    <ul class="pricing-features">
+                        <li>Unlimited models</li>
+                        <li>Dedicated infrastructure</li>
+                        <li>Premium features</li>
+                        <li>24/7 support</li>
+                        <li>Custom SLAs</li>
+                    </ul>
+                    <a href="#" class="btn btn-secondary">Contact Sales</a>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>Solutions</h3>
+                <ul>
+                    <li><a href="#">Computer Vision</a></li>
+                    <li><a href="#">Natural Language Processing</a></li>
+                    <li><a href="#">Time Series Analysis</a></li>
+                    <li><a href="#">Recommendation Systems</a></li>
+                    <li><a href="#">Generative AI</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Resources</h3>
+                <ul>
+                    <li><a href="blog.html">My Blog Page</a></li>
+                    <li><a href="Governance.html">Governance & Compliance</a></li>
+                    <li><a href="LLM.html">Unauthorized LLM Usage</a></li>
+                    <li><a href="Ai model.html">AI Model Training</a></li>
+                    <li><a href="IP and copyright.html">IP & Copyright
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Company</h3>
+                <ul>
+                    <li><a href="About.html">About Us</a></li>
+                    <li><a href="Careers.html">Careers</a></li>
+                    <li><a href="blog.html">Blog Page</a></li>
+                    <li><a href="Contact.html">Contact Us</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Connect With Us</h3>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-linkedin"></i></a> 
+                    <a href="https://www.facebook.com/share/1PPoiiYR2x/" target="_blank"><i class="fab fa-facebook"></i></a>
+                    <a href="https://www.instagram.com/m_o_h_i_t.sharma._52?igsh=MTg3NDBydHhucDBuYQ==" target="_blank"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-github"></i></a>
+                </div>
+                
+                <p style="margin-top: 1rem;">WIT college Gurugram<br>Mobile No = +91 9053318503<br>
+                Mail=mohitkumar905331@gmail.com</p>
+            </div>
+        </div>
+        
+        <div class="copyright">
+            <p>© 2025 AI Model Training. All rights reserved. | <a href="#">Terms of Use</a> | <a href="#">Privacy Policy</a></p>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Sidebar Toggle
+        const menuBtn = document.getElementById('menuBtn');
+        const closeSidebar = document.getElementById('closeSidebar');
+        const sidebar = document.getElementById('sidebar');
+        
+        menuBtn.addEventListener('click', () => {
+            sidebar.classList.add('open');
+        });
+        
+        closeSidebar.addEventListener('click', () => {
+            sidebar.classList.remove('open');
+        });
+        
+        // Tab Functionality
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active class from all buttons and contents
+                tabBtns.forEach(b => b.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
+                
+                // Add active class to clicked button
+                btn.classList.add('active');
+                
+                // Show corresponding content
+                const tabId = btn.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    // Close mobile menu if open
+                    sidebar.classList.remove('open');
+                    
+                    // Scroll to target
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
